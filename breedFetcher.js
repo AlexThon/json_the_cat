@@ -1,20 +1,29 @@
 const request = require("request");
-let cat = process.argv[2];
-//console.log(search);
 
-let url = `https://api.thecatapi.com/v1/breeds/search?q=${cat}`;
 
-request(url, (error, response, body) => {
-  if (error) {
-    console.log("Contenr Error...");
-    return;
-  }
+const fetchBreedDescription = function(breedName, callback) {
+  let url = `https://api.thecatapi.com/v1/breeds/search?q=${breedName}`;
 
-  try {
+  request(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      
+    }
     const data = JSON.parse(body);
-    console.log(data[0].description);
-  } catch (error) {
-    console.log("Name provided is not there");
-  }
+    if (data) {
+      try {
+        callback(null, data[0].description);
+      } catch (error) {
+        callback(error, null);
+		
+		
+      }
+      
+    }
+  });
 
-});
+};
+
+
+module.exports = { fetchBreedDescription };
+
